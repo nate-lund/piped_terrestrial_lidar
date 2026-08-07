@@ -9,7 +9,7 @@ min_y = max_y - 10
 print(c(min_x, min_y, max_x, max_y))
 
 # Load LAS, clipping to AOI
-las <- readLAS("H:/_terrestrial-lidar_working/_working/2025-05-29_WD/combined_range_100_o005_real.las",
+las <- readLAS("H:/_terrestrial-lidar_working/_working/2025-05-29_WD/combined_range-100_o005.las",
                filter = "-keep_xy 450838 4967639  450848 4967649") # min_x min_y max_x max_y
 
 # Force coordinate system to NAD83 / UTM zone 15N (which we know it is in)
