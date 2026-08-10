@@ -7,7 +7,7 @@
 # install.packages(c("rlas", "lidR"), repos = c("https://r-lidar.r-universe.dev", "https://cloud.r-project.org")); install.packages('lasR', repos = 'https://r-lidar.r-universe.dev'); install.packages('lidRviewer', repos = 'https://r-lidar.r-universe.dev')
 
 # libraries needed
-libs <- c("httr", "jsonlite", "ggplot2", "terra", "leaflet", "ncdf4", "tidyr", "dplyr", "readr", "targets", "usethis", "sf", "targets", "visNetwork", "tarchetypes", "tidyterra", "performance", "see", "RColorBrewer", "lme4", "nlme", "readxl", "writexl", "emmeans", "splines", "lspline", "ggeffects", "lubridate", "cowplot", "gridGraphics", "broom", "DT", "flextable", "wesanderson", "ggspatial", "extrafont", "aqp", "lidR", "lasR", "lidRviewer", "shapefiles")
+libs <- c("httr", "jsonlite", "ggplot2", "terra", "leaflet", "ncdf4", "tidyr", "dplyr", "readr", "targets", "usethis", "sf", "targets", "visNetwork", "tarchetypes", "tidyterra", "performance", "see", "RColorBrewer", "lme4", "nlme", "readxl", "writexl", "emmeans", "splines", "lspline", "ggeffects", "lubridate", "cowplot", "gridGraphics", "broom", "DT", "flextable", "wesanderson", "ggspatial", "extrafont", "aqp", "lidR", "lasR", "lidRviewer", "shapefiles", "RCSF", "future")
 
 # install missing libraries
 installed_libs <- libs %in% rownames(installed.packages())
@@ -42,11 +42,22 @@ tar_source("R/classification-functions.R")
 # Define a list with targets. Order does not matter
 list(
   
-  ## Template ====
+  ## Import Point Cloud ====
   tar_target(
-    tka_files,
-    list.files("_tka-files", pattern = "\\.TKA$", full.names = TRUE),
-    cue = tar_cue(mode = "always")
+    cloud_path,
+    "H:/_terrestrial-lidar_working/_working/2026-08-06_WD/combined_range-100_o005.las"
+  ),
+  
+  ### Tile point cloud ====
+  tar_target(
+    tile_paths,
+    tile_cloud(cloud_path) # This output is a list of file paths
+  ),
+  
+  ### Tracks the actual files on disk, branches over them ====
+  tar_files( # This facilitates branching which is needed for the next step 
+    chunks,
+    chunk_paths
   )
   
 )
