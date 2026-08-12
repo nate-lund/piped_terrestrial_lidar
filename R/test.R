@@ -60,7 +60,14 @@ csf_ground <- filter_poi(las_csf, Classification == 2)
 # View if needed
 view(csf_ground)
 
-#================================ Rough Cut of Classification ================================
+#================================ Real ================================
+
+
+
+las <- readTLS("H:/_terrestrial-lidar_working/_working/_targets_files/_tiles_rough-class/2026-08-06_WD_o005/2026-08-06_WD_o005_-75_0_classified.laz",
+               filter = "-keep_class 2")
+
+view(las)
 
 # Quickly test classify (using Progressive TIN Densification)
 las_ptd <- classify_ground(las,

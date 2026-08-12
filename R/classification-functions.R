@@ -81,6 +81,7 @@ rough_classify = function(tiles, output_folder){
                             )
   )
   
+  return(ctg_csf$filename)
 }
 
 
