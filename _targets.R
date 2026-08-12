@@ -29,11 +29,15 @@ tar_option_set(
 
 # Run the R scripts in the R/ folder with functions
 tar_source("R/classification-functions.R")
-# tar_source(R/ohter-functions.R)
+# tar_source(R/other-functions.R)
 
 #' [WHEN RUNNING FOR THE FIRST TIME]
 # Run commented out code below to clear storage:
 # tar_destroy(destroy = c("objects")); file.remove(list.files("_plot_outputs", full.names = TRUE))
+
+# Some performance tools for lidR levers
+plan(multisession, workers = 16)  # Adjust to your core count
+set_lidr_threads(16) # ^
 
 
 #================================ Targets ================================
@@ -42,22 +46,38 @@ tar_source("R/classification-functions.R")
 # Define a list with targets. Order does not matter
 list(
   
-  ## Import Point Cloud ====
-  tar_target(
-    cloud_path,
-    "H:/_terrestrial-lidar_working/_working/2026-08-06_WD/combined_range-100_o005.las"
+  ## Import Point Clouds ====
+  tar_files(
+    las_files,
+    list.files(
+      "H:/_terrestrial-lidar_working/_working/_clouds",
+      pattern = "\\.(las|laz)$",
+      full.names = TRUE,
+      ignore.case = TRUE
+    )
   ),
   
-  ### Tile point cloud ====
+  ### Tile point clouds, branching over each .las ====
   tar_target(
-    tile_paths,
-    tile_cloud(cloud_path) # This output is a list of file paths
+    tiles,
+    tile_cloud(
+      las_path   = las_files,
+      output_folder = "H:/_terrestrial-lidar_working/_working/_targets_files/_tiles"
+    ),
+    pattern = map(las_files),
+    format  = "file"
   ),
-  
-  ### Tracks the actual files on disk, branches over them ====
-  tar_files( # This facilitates branching which is needed for the next step 
-    chunks,
-    chunk_paths
+
+  ### Perform a rough classification  ====
+  tar_target(
+    rough_ground,
+    rough_classify(
+      tiles,
+      output_folder = "H:/_terrestrial-lidar_working/_working/_targets_files/_tiles_rough-class"
+      ),
+    pattern = map(tiles),
+    format  = "file"
   )
+  
   
 )
