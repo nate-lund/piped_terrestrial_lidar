@@ -28,12 +28,12 @@ tar_option_set(
 )
 
 # Run the R scripts in the R/ folder with functions
-tar_source("R/classification-functions.R")
+tar_source("R/preprocessing-functions.R")
 # tar_source(R/other-functions.R)
 
 #' [WHEN RUNNING FOR THE FIRST TIME]
 # Run commented out code below to clear storage:
-# tar_destroy(destroy = c("objects")); file.remove(list.files("_plot_outputs", full.names = TRUE))
+# tar_destroy(destroy = c("objects"))
 
 # Some performance tools for lidR levers
 plan(multisession, workers = 16)  # Adjust to your core count
@@ -50,7 +50,8 @@ list(
   tar_files(
     las_files,
     list.files(
-      "H:/_terrestrial-lidar_working/_working/_clouds",
+      #' [SET] the location where full .laz or .las files are stored
+      "H:/_terrestrial-lidar_working/_working/_full_clouds",
       pattern = "\\.(las|laz)$",
       full.names = TRUE,
       ignore.case = TRUE
@@ -62,22 +63,37 @@ list(
     tiles,
     tile_cloud(
       las_path   = las_files,
-      output_folder = "H:/_terrestrial-lidar_working/_working/_targets_files/_tiles"
+      #' [SET] the location where you want tiles
+      output_folder = "H:/_terrestrial-lidar_working/_working/_tiles",
+      tile_size = 25 # tile size in m
     ),
     pattern = map(las_files),
     format  = "file"
   ),
 
-  ### Perform a rough classification  ====
+  ### Perform a rough classification ====
   tar_target(
-    rough_ground,
+    rough_classification,
     rough_classify(
       tiles,
-      output_folder = "H:/_terrestrial-lidar_working/_working/_targets_files/_tiles_rough-class"
+      #' [SET] the location where you want roughly-classified tiles
+      output_folder = "H:/_terrestrial-lidar_working/_working/_classification-1"
       ),
     pattern = map(tiles),
     format  = "file"
-  )
+  ),
   
+  ### Save only ground points ====
+  tar_target(
+    ground_only,
+    filter_ground(
+      tiles = rough_classification,
+      #' [SET] the location where you want roughly-classified tiles
+      output_folder = "H:/_terrestrial-lidar_working/_working/_ground-only"
+    ),
+    pattern = map(tiles),
+    format  = "file"
+  )
+
   
 )
