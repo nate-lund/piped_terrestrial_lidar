@@ -7,7 +7,7 @@
 # install.packages(c("rlas", "lidR"), repos = c("https://r-lidar.r-universe.dev", "https://cloud.r-project.org")); install.packages('lasR', repos = 'https://r-lidar.r-universe.dev'); install.packages('lidRviewer', repos = 'https://r-lidar.r-universe.dev')
 
 # libraries needed
-libs <- c("httr", "jsonlite", "ggplot2", "terra", "leaflet", "ncdf4", "tidyr", "dplyr", "readr", "targets", "usethis", "sf", "targets", "visNetwork", "tarchetypes", "tidyterra", "performance", "see", "RColorBrewer", "lme4", "nlme", "readxl", "writexl", "emmeans", "splines", "lspline", "ggeffects", "lubridate", "cowplot", "gridGraphics", "broom", "DT", "flextable", "wesanderson", "ggspatial", "extrafont", "aqp", "lidR", "lasR", "lidRviewer", "shapefiles", "RCSF", "future")
+libs <- c("httr", "jsonlite", "ggplot2", "terra", "leaflet", "ncdf4", "tidyr", "dplyr", "readr", "targets", "usethis", "sf", "targets", "visNetwork", "tarchetypes", "tidyterra", "performance", "see", "RColorBrewer", "lme4", "nlme", "readxl", "writexl", "emmeans", "splines", "lspline", "ggeffects", "lubridate", "cowplot", "gridGraphics", "broom", "DT", "flextable", "wesanderson", "ggspatial", "extrafont", "aqp", "lidR", "lasR", "lidRviewer", "shapefiles", "RCSF", "future", "RMCC")
 
 # install missing libraries
 installed_libs <- libs %in% rownames(installed.packages())
