@@ -119,10 +119,10 @@ filter_ground = function(tiles, output_folder){
   opt_chunk_buffer(ctg) = 0 # buffer size in m
   opt_filter(ctg) <- "-keep_class 2"
 
-  print(paste0("Rebuilding: ", base_name))
+  print(paste0("Filtering Ground: ", base_name))
   ctg_retile = catalog_retile(ctg)
   
-  return(ctg_ground$filename)
+  return(ctg_retile$filename)
 
   }
 

@@ -1,5 +1,20 @@
 #================================ Test ================================
 
+# Read full .las
+las1 = readTLS(
+  "H:/_terrestrial-lidar_working/_working/_test/2026-08-06_WD_o005_clipped_-50_25_classified_classified.las",
+  filter = "-keep_class 2"
+)
+
+# Read Gully
+las_gully = readTLS(
+  "H:/_terrestrial-lidar_working/_working/_test/2026-08-06_WD_o005_clipped_-50_25_classified_gully.las"
+) %>% 
+  filter_poi(R <= 60000 & G <= 60000 & B <= 60000)
+
+plot(las_gully, color = "RGB")
+plot(las_gully, color = "Reflectance")
+
 # Read .las
 las = readTLS(
   "H:/_terrestrial-lidar_working/_working/_classification-1/2026-08-06_WD_o005/2026-08-06_WD_o005_-50_25_classified.las",
@@ -7,11 +22,16 @@ las = readTLS(
   )
 
 # Filter out bright white points for visualziation
-las_clean <- filter_poi(las, R <= 60000 & G <= 60000 & B <= 60000)
+las_clean <- filter_poi(las1, R <= 60000 & G <= 60000 & B <= 60000)
 
 plot(las_clean, color = "RGB")
 
+plot(las1, color = "Reflectance")
 
+
+hist(las1$Intensity, breaks = 100)
+
+hist(las_clean$G, breaks = 100)
 
 #View a transect
 p1 <- c(-35, 35)
@@ -72,15 +92,15 @@ plot(las, color = "Intdex")
 
 #================================ Classification ================================
 
-
+las_for_class = las_gully
 
 # Progressive TIN Densification (PTD)
-las_tin = classify_ground(las,
+las_tin = classify_ground(las_for_class,
                           ptd(
                             # Res: The resolution must be chosen large enough so that the lowest point in each cell is actually a ground point
                             res = 10, # 10 recommended in forests, seems to have minimal impact
                             # Angle: Use smaller values (e.g., 20) for flat terrain and larger values (e.g., 40) for mountainous regions.
-                            angle = 10,
+                            angle = 30,
                             distance = 0.05,
                             spacing = 0.005, # Should be equal to the spacing of the ground points
                             )
@@ -90,12 +110,12 @@ las_tin = classify_ground(las,
 plot(las_tin, color = "Classification")
 
 
-
-las_csf <- classify_ground(las,
+# Looks good!
+las_csf <- classify_ground(las_for_class,
                            algorithm = csf(
                              sloop_smooth = TRUE, # Set to TRUE with steep slopes
-                             class_threshold = 0.5, # Distance from the cloth that counts as ground 
-                             cloth_resolution = 0.5, # Distance between cloth particles, should be average distance of points in cloud
+                             class_threshold = 0.0015, # Distance from the cloth that counts as ground 
+                             cloth_resolution = 0.001, # Distance between cloth particles, should be average distance of points in cloud
                              rigidness = 1L, # 1 = very soft, 2 = medium, 3 = hard for flat tarrain
                              iterations = 500L, # Default
                              time_step = 0.65 # Default

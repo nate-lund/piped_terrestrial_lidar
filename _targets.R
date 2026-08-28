@@ -51,7 +51,7 @@ list(
     las_files,
     list.files(
       #' [SET] the location where full .laz or .las files are stored
-      "H:/_terrestrial-lidar_working/_working/_full_clouds",
+      "H:/_terrestrial-lidar_working/_working/00_full_clouds",
       pattern = "\\.(las|laz)$",
       full.names = TRUE,
       ignore.case = TRUE
@@ -64,7 +64,7 @@ list(
     tile_cloud(
       las_path   = las_files,
       #' [SET] the location where you want tiles
-      output_folder = "H:/_terrestrial-lidar_working/_working/_tiles",
+      output_folder = "H:/_terrestrial-lidar_working/_working/01_tiles",
       tile_size = 25 # tile size in m
     ),
     pattern = map(las_files),
@@ -77,7 +77,7 @@ list(
     rough_classify(
       tiles,
       #' [SET] the location where you want roughly-classified tiles
-      output_folder = "H:/_terrestrial-lidar_working/_working/_classification-1"
+      output_folder = "H:/_terrestrial-lidar_working/_working/02_first-classification"
       ),
     pattern = map(tiles),
     format  = "file"
@@ -89,7 +89,7 @@ list(
     filter_ground(
       tiles = rough_classification,
       #' [SET] the location where you want roughly-classified tiles
-      output_folder = "H:/_terrestrial-lidar_working/_working/_ground-only"
+      output_folder = "H:/_terrestrial-lidar_working/_working/03_rough-ground"
     ),
     pattern = map(tiles),
     format  = "file"
